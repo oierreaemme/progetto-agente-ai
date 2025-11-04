@@ -35,7 +35,7 @@ st.title("🤖 Agente AI Autonomo")
 st.caption("Costruito con Gemini, Tavily e Streamlit")
 
 # --- Blocco Password (Resta identico) ---
-PASSWORD_CORRETTA = "atlas-123" 
+PASSWORD_CORRETTA = os.environ.get("APP_PASSWORD")
 password_inserita = st.text_input("Inserisci la password per accedere:", type="password")
 
 if password_inserita == PASSWORD_CORRETTA:
@@ -110,4 +110,5 @@ if password_inserita == PASSWORD_CORRETTA:
             st.write(response_text)
 
 elif password_inserita: 
+
     st.error("Password errata. Riprova.")
