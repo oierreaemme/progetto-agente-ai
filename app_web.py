@@ -35,13 +35,41 @@ st.title("🤖 Agente AI Autonomo")
 st.caption("Costruito con Gemini, Tavily e Streamlit")
 
 # --- Blocco Password (Resta identico) ---
-PASSWORD_CORRETTA = "atlas-123" 
+PASSWORD_CORRETTA = os.environ.get("APP_PASSWORD") 
 password_inserita = st.text_input("Inserisci la password per accedere:", type="password")
 
 if password_inserita == PASSWORD_CORRETTA:
     
     st.success("Accesso consentito!") 
 
+    # --- Blocco Caricamento File ---
+uploaded_file = st.file_uploader(
+    "1. Carica il tuo file audio (.wav, .mp3, .flac)", 
+    type=['wav', 'mp3', 'flac']
+)
+
+if uploaded_file is not None:
+    # Se un file è stato caricato, lo salviamo in una cartella temporanea
+    
+    # Creiamo una cartella 'temp_uploads' se non esiste
+    temp_dir = "temp_uploads"
+    if not os.path.exists(temp_dir):
+        os.makedirs(temp_dir)
+        
+    # Creiamo il percorso completo del file
+    file_path = os.path.join(temp_dir, uploaded_file.name)
+    
+    # Scriviamo i "byte" del file caricato in un nuovo file sul nostro server
+    with open(file_path, "wb") as f:
+        f.write(uploaded_file.getbuffer())
+        
+    # Memorizziamo il percorso del file nello "zainetto" della sessione
+    st.session_state.file_path = file_path
+    
+    st.success(f"File '{uploaded_file.name}' caricato con successo!")
+    st.audio(file_path) # Mostriamo un bel player audio per conferma
+# --- Fine Blocco Caricamento File ---
+    
     # --- Blocco Caricamento File ---
     uploaded_file = st.file_uploader(
         "1. Carica il tuo file audio (.wav, .mp3, .flac)", 
@@ -139,3 +167,4 @@ if password_inserita == PASSWORD_CORRETTA:
 
 elif password_inserita: 
     st.error("Password errata. Riprova.")
+
